@@ -1,0 +1,47 @@
+ /* VARIABLES :    */
+
+ /* BODY */
+.Navbar {
+  background-color: aqua;
+  /* padding: 10px; */
+  /* margin: 5px 10px 5px 10px; */
+  text-align: right;
+}
+
+.img-zoom {
+  -webkit-transition-duration: 0.5s; 
+   transition-duration: 0.5s; 
+}
+
+.img-zoom img {
+    top: 50%;
+    width: 100%;
+    position: relative;
+    background-size:cover
+}
+
+.img-zoom:hover {
+  -webkit-transform: scale(1.3);
+  transform: scale(1.3);
+}
+
+/* .img-zoom:active {
+  -webkit-transform: scale(0.8);
+  transform: scale(0.8);
+  -webkit-transition-timing-function: cubic-bezier(0.47, 2.02, 0.31, -0.36);
+  transition-timing-function: cubic-bezier(0.47, 2.02, 0.31, -0.36);
+} */
+
+.buzz_effect {
+  --width: 100%;
+  --time: 0.7s;
+  -webkit-transition-duration: 0.5s;
+  transition-duration: 0.5s;
+}
+
+.buzz_effect:active {
+  -webkit-transform: scale(0.8);
+  transform: scale(0.8);
+  -webkit-transition-timing-function: cubic-bezier(0.47, 2.02, 0.31, -0.36);
+  transition-timing-function: cubic-bezier(0.47, 2.02, 0.31, -0.36);
+}
