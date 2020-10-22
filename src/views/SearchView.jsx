@@ -1,20 +1,23 @@
-import React, { Component } from "react";
+import React, {useState} from "react";
 import TextField from '@material-ui/core/TextField';
 //components
 import GridCardList from "../components/Grid/GridList.jsx"
 
-export default function SearchView () {
+export default function SearchView (props) {
 
-    const [searchInput, setSearchInput] = React.useState(''); 
-    const [searchArray, setSearchArray] = React.useState([]); 
-    const [resultsCount, setResultsCount] = React.useState(0);
+    const [searchInput, setSearchInput] = useState(''); 
+    const [searchArray, setSearchArray] = useState([]); 
+    const [resultsCount, setResultsCount] = useState(0);
+    const [selectedMovie, setSelectedMovie] = useState([]);
+    const [page, setPage] = React.useState(1);
     const APIkey = process.env.REACT_APP_API_KEY;
 
     const onSearchChange = (event) => {
         setSearchArray([]);
         setResultsCount(0);
+        setPage(1);
         setSearchInput(event.target.value);       
-        console.log('searchInput' , searchInput, searchArray);
+        // console.log('searchInput' , searchInput, searchArray);
     }
 
     const setResultCount = (count) => {
@@ -25,22 +28,31 @@ export default function SearchView () {
         setSearchArray(searchArray => [...searchArray, ...movies]);
     }
 
+    const selectMovie = (movieId) => {
+        props.selectMovie(movieId)
+    }
+
+    const fetchAnotherPage = () => {
+        fetchMovie(page+2);
+        fetchMovie(page+3);
+        setPage(page+2);
+    }
+
     const fetchMovie = (part) => {
-        fetch('http://www.omdbapi.com/?apikey=' + APIkey + '&s=' + searchInput + '&page='+ part)
+        const fetchURL = 'http://www.omdbapi.com/?apikey=' + APIkey + '&s=' + searchInput + '&page='+ part; 
+        fetch(`${fetchURL}`)
             .then(response=> response.json())
             .then(movies => {if (movies.Response==='True') {
-                AddMovieArray(movies.Search)
-                setResultCount(movies.totalResults)
-            }})
+                    AddMovieArray(movies.Search)
+                    if (page ===1) {setResultCount(movies.totalResults)}
+                } 
+            })
             .catch(err => {console.log('FETCH ERROR: ', err)});
     }
 
-    // http://www.omdbapi.com/?apikey=dc520480&s=Batman
-
     React.useEffect(() => {
-        console.log('FETCH for ', searchInput);
-            fetchMovie(1);
-            fetchMovie(2);
+            fetchMovie(page);
+            fetchMovie(page+1);
     }, [searchInput])
 
     return (
@@ -56,7 +68,9 @@ export default function SearchView () {
                     Results: {resultsCount} </div>
             </div>
             <GridCardList searchArray={searchArray}
-                        resultsCount={resultsCount}/>
+                        resultsCount={resultsCount}
+                        fetchAnotherPage={fetchAnotherPage}
+                        selectMovie={selectMovie}/>
         </React.Fragment>
         )
  }

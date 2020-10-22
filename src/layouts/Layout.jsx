@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Switch, Link, NavLink } from "react-router-dom";
+import { Route, Switch, Link } from "react-router-dom";
 import clsx from 'clsx';
 
 import { makeStyles, useTheme } from '@material-ui/core/styles';
@@ -81,10 +81,12 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0, 1),
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
+    backgroundColor: '#fafafa',
   },
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
+    backgroundColor: '#fafafa',
   },
   nounderlying: {
     textDecoration: 'none',
@@ -95,6 +97,11 @@ export default function Layout() {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
+  const [selectedMovieID, setSelectedMovieID] = React.useState(""); 
+
+  const selectMovie = (movieId) => {
+    setSelectedMovieID(movieId)
+}
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -113,7 +120,8 @@ export default function Layout() {
             render={props => (
               <prop.component
                 {...props}
-                detail={null}
+                selectedMovie={selectedMovieID}
+                selectMovie={selectMovie}
               />
             )}
             key={key}

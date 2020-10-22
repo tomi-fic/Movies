@@ -1,4 +1,7 @@
 import React from 'react';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import { Link, NavLink } from "react-router-dom";
+
 import { makeStyles } from '@material-ui/core/styles';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
@@ -35,29 +38,50 @@ export default function GridCardList(props) {
   
   return (
     <div className={classes.root}>
-      <GridList cellHeight={190} 
+      <InfiniteScroll
+          style={{"width":"100%"}}
+          dataLength={props.searchArray.length}
+          next={props.fetchAnotherPage}
+          hasMore={props.resultsCount-props.searchArray.length !==0}
+          loader={<h4>Loading...</h4>}
+          // endMessage={
+          //     <p style={{ textAlign: 'center' }}>
+          //       <b>Yay! You have seen it all</b>
+          //     </p>
+          //   }
+          > 
+        <GridList cellHeight={190} 
                 className={classes.gridList}
                 cols={5}>
-        {props.searchArray.map((movie,key) => (
-            <GridListTile key={movie.Title + key} className="buzz_effect">
-                <div className="img-zoom">
-                    {(movie.Poster === 'N/A') 
-                        ? <img src={defaultImage} alt={movie.Title} />
-                        : <img src={movie.Poster} alt={movie.Title} />
-                    }
-                    
-                </div>
-                <GridListTileBar
-                title={movie.Title}
-                subtitle={<span>Year: {movie.Year}</span>}
-                actionIcon={
-                    <IconButton aria-label={`info about ${movie.Title}`} className={classes.icon}>
-                        <InfoIcon />
-                    </IconButton>}
-                />
-            </GridListTile>
-        ))}
-      </GridList>
+          {props.searchArray.map((movie,key) => (
+              <GridListTile key={movie.imdbID} 
+                  // className="buzz_effect"
+                  // onClick={()=>console.log("CLIKED: ",movie.Title)}
+                  >
+                  <div className="img-zoom">
+                      {(movie.Poster === 'N/A') 
+                          ? <img src={defaultImage} alt={movie.Title} />
+                          : <img src={movie.Poster} alt={movie.Title} />
+                      }
+                  </div>
+                  <GridListTileBar
+                    title={movie.Title}
+                    subtitle={<span> {movie.Type.toUpperCase()} {movie.Year}</span>}
+                    actionIcon={
+                      <Link to={"/movies/detail"} 
+                            key={movie.imdbID}>
+                        <IconButton aria-label={`info about ${movie.Title}`} 
+                                    className={classes.icon}
+                                    onClick={()=> props.selectMovie(movie.imdbID)}>
+                            <InfoIcon />
+                        </IconButton>
+                      </Link>  
+                      }
+                  />
+              </GridListTile>   
+          ))}
+        </GridList>
+      </InfiniteScroll>
     </div>
   );
 }

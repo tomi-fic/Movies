@@ -1,14 +1,10 @@
 import React, { Component } from "react";
 
-export class DetailView extends Component {
-
-    render() {
+    export default function DetailView (props) {
         return (
             <div>
-                DetailView
+                {props.selectedMovie}
             </div>
             )
-        }
  }
 
- export default DetailView;

@@ -1,6 +1,14 @@
  /* VARIABLES :    */
 
  /* BODY */
+.makeStyles-root-16 {
+  background-color: #fafafa !important;
+}
+
+.infinite-scroll-component__outerdiv {
+  width: 100%;
+}
+
 .Navbar {
   background-color: aqua;
   /* padding: 10px; */
