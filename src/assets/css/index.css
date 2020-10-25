@@ -1,9 +1,12 @@
  /* VARIABLES :    */
+ :root {
+   --themeColor: #3f51b5
+ }
 
  /* BODY */
-.makeStyles-root-16 {
+/* .makeStyles-root-16 {
   background-color: #fafafa !important;
-}
+} */
 
 .infinite-scroll-component__outerdiv {
   width: 100%;
@@ -52,4 +55,18 @@
   transform: scale(0.8);
   -webkit-transition-timing-function: cubic-bezier(0.47, 2.02, 0.31, -0.36);
   transition-timing-function: cubic-bezier(0.47, 2.02, 0.31, -0.36);
+}
+
+.rating {
+  display: flex;
+  justify-content: space-between;
+  color:white;
+  background-color:var(--themeColor);
+  border-color: var(--themeColor);
+  /* opacity: 0.7; */
+  border-style: solid;
+  border-width: 2px;
+  border-radius: 12px;
+  padding: 5px;
+  margin-bottom: 5px;  
 }

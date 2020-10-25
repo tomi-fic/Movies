@@ -1,4 +1,5 @@
 import React from 'react';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import { Link } from "react-router-dom";
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -7,8 +8,8 @@ import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import IconButton from '@material-ui/core/IconButton';
 import InfoIcon from '@material-ui/icons/Info';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Tooltip from '@material-ui/core/Tooltip';
-import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 
 import defaultImage from "../../assets/img/defaultimage.jpg";
 
@@ -18,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     flexWrap: 'wrap',
     justifyContent: 'space-around',
     overflow: 'hidden',
-    backgroundColor: theme.palette.background.paper,
+    // backgroundColor: theme.palette.background.paper,
     marginTop: '15px',
     padding: '5px'
   },
@@ -32,36 +33,37 @@ const useStyles = makeStyles((theme) => ({
   icon: {
     color: 'rgba(255, 255, 255, 0.54)',
   },
-  removeicon: {
-    color: 'rgba(255, 255, 255, 0.54)', 
-    zIndex:'99',
-    position: 'absolute',
-    right: '10px',
-    top: '10px'
-  },
 }));
 
-export default function GridCardList(props) {
+export default function GridCardListInfinite(props) {
   const classes = useStyles();
   
   return (
     <div className={classes.root}>
+      <InfiniteScroll
+          style={{"width":"100%"}}
+          dataLength={props.searchArray.length}
+          next={props.fetchAnotherPage}
+          hasMore={props.resultsCount-props.searchArray.length !==0}
+          loader={<div style={{ display: 'flex', justifyContent:'center', margin:'30px'}}>
+                    <CircularProgress />
+                  </div>}
+          // endMessage={
+          //     <p style={{ textAlign: 'center' }}>
+          //       <b>Yay! You have seen it all</b>
+          //     </p>
+          //   }
+          > 
         <GridList cellHeight={190} 
                 className={classes.gridList}
                 cols={5}>
-          {props.favouriteMovies.map((movie,key) => (
+          {props.searchArray.map((movie,key) => (
               <GridListTile key={movie.imdbID}>
-                <div>
-                  <Tooltip title="Remove from favourites" placement="bottom" arrow>
-                    <RemoveCircleIcon className={classes.removeicon}
-                          onClick={()=> props.removeFromFavourites(movie.imdbID)}/>
-                  </Tooltip>
                   <div className="img-zoom">
                       {(movie.Poster === 'N/A') 
                           ? <img src={defaultImage} alt={movie.Title} />
                           : <img src={movie.Poster} alt={movie.Title} />
                       }
-                  </div>
                   </div>
                   <GridListTileBar
                     title={movie.Title}
@@ -84,6 +86,7 @@ export default function GridCardList(props) {
               </GridListTile>   
           ))}
         </GridList>
+      </InfiniteScroll>
     </div>
   );
 }

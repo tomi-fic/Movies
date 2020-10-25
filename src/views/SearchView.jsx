@@ -1,14 +1,13 @@
 import React, {useState} from "react";
 import TextField from '@material-ui/core/TextField';
 //components
-import GridCardList from "../components/Grid/GridList.jsx"
+import GridCardListInfinite from "../components/Grid/GridListInfinite.jsx"
 
 export default function SearchView (props) {
 
     const [searchInput, setSearchInput] = useState(''); 
     const [searchArray, setSearchArray] = useState([]); 
     const [resultsCount, setResultsCount] = useState(0);
-    const [selectedMovie, setSelectedMovie] = useState([]);
     const [page, setPage] = React.useState(1);
     const APIkey = process.env.REACT_APP_API_KEY;
 
@@ -29,7 +28,9 @@ export default function SearchView (props) {
     }
 
     const selectMovie = (movieId) => {
-        props.selectMovie(movieId)
+        fetch('http://www.omdbapi.com/?apikey=' + APIkey + '&i=' + movieId + '&plot=full')
+            .then(response=> response.json())
+            .then(movieDetail => {props.selectMovie(movieDetail)});
     }
 
     const fetchAnotherPage = () => {
@@ -67,7 +68,7 @@ export default function SearchView (props) {
                 <div style={{"fontSize":"22px","padding":"12px"}}>
                     Results: {resultsCount} </div>
             </div>
-            <GridCardList searchArray={searchArray}
+            <GridCardListInfinite searchArray={searchArray}
                         resultsCount={resultsCount}
                         fetchAnotherPage={fetchAnotherPage}
                         selectMovie={selectMovie}/>

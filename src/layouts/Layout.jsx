@@ -17,12 +17,10 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-
 //getting layout routes
 import { Routes } from "../variables/routes.js";
 // getting logo
 import Logo from "../assets/img/bird.png";
-
 
 const drawerWidth = 170;
 
@@ -97,11 +95,32 @@ export default function Layout() {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
-  const [selectedMovieID, setSelectedMovieID] = React.useState(""); 
+  const [selectedMovie, setSelectedMovie] = React.useState([]); 
+  const [favouriteMovies, setfavouriteMovies] = React.useState([]);
 
-  const selectMovie = (movieId) => {
-    setSelectedMovieID(movieId)
+  const selectMovie = (movieDetail) => {
+    setSelectedMovie([movieDetail]);
 }
+
+  const addToFavourites = () => {
+    if (!checkIfFavourite()) {
+      setfavouriteMovies(favouriteMovie => [...favouriteMovie, selectedMovie[0]])
+    }
+  }
+
+  const removeFromFavourites = (imdbID) => {
+    if (checkIfFavourite()) {
+      setfavouriteMovies(favouriteMovies.filter(movie => movie.imdbID !== (!imdbID ? selectedMovie[0].imdbID :imdbID)))
+    }
+  }
+
+  const checkIfFavourite = () => {
+    let isFavourite = false;  
+    favouriteMovies.map((movie) => {
+      if (movie.imdbID === selectedMovie[0].imdbID) {isFavourite = true}
+    })
+    return isFavourite
+  }
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -120,8 +139,13 @@ export default function Layout() {
             render={props => (
               <prop.component
                 {...props}
-                selectedMovie={selectedMovieID}
+                selectedMovie={selectedMovie}
+                favouriteMovies={favouriteMovies}
                 selectMovie={selectMovie}
+                addToFavourites={addToFavourites}
+                removeFromFavourites={removeFromFavourites}
+                isAddedToFavourites={checkIfFavourite}
+
               />
             )}
             key={key}
@@ -191,15 +215,6 @@ export default function Layout() {
             </Link>
           ))}
         </List>
-        {/* <Divider />
-        <List>
-          {['All mail', 'Trash', 'Spam'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List> */}
       </Drawer>
       <main className={classes.content}>
         <div className={classes.toolbar} />
