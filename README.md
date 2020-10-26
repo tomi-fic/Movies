@@ -1,7 +1,7 @@
 Movie App - FrontEnd Project
 =====================
 
-This app is made for movies search with frontend only. There are many libraries used in this project : [React] for DOM visualisation, [Redux] for state management, [redux-thunk] for handling API side effects, [react-router] for SPA approach and many more. Please feel free to fork it and  
+This app is made for movies search with frontend only. There are many libraries used in this project : **React** for DOM visualisation, **Redux** for state management, **redux-thunk** for handling API side effects, **react-router** for SPA approach and many more. Please feel free to fork it and  
 
 Prerequisites
 -------------
@@ -16,8 +16,8 @@ Get your API KEY
 
 * go to http://www.omdbapi.com/apikey.aspx and register for free
 * check your emailbox with personal API key
-* create [.env] file at root directory - ../Movies/
-* append .env file with your API key - REACT_APP_API_KEY = [APIkey] ... example REACT_APP_API_KEY = abcd1234
+* create **.env** file at root directory - ../Movies/
+* append .env file with your API key - REACT_APP_API_KEY = **APIkey** ... example REACT_APP_API_KEY = abcd1234
 
 Installation
 ------------
