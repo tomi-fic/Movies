@@ -1,15 +1,20 @@
 import React from "react";
+import {connect} from 'react-redux';
 
 import DetailCard from '../components/Card/DetailCard.jsx'
 
-export default function DetailView (props) {
-    return props.selectedMovie.length < 1
+const mapStateToProps = state => {
+    return {
+      selectedMovie: state.requestMovie.selectedMovie,
+    }
+  }
+
+function DetailView (props) {
+    return  props.selectedMovie.length < 1 
         ? <h1>No movie selected</h1>
         : (<div>
-                <DetailCard movie={props.selectedMovie[0]}
-                            addToFavourites={props.addToFavourites}
-                            removeFromFavourites={props.removeFromFavourites}
-                            isAddedToFavourites={props.isAddedToFavourites}/>
+                <DetailCard/> 
            </div>)
  }
 
+ export default connect(mapStateToProps, null)(DetailView);

@@ -1,60 +1,56 @@
-import React, {useState} from "react";
+import React from "react";
+import { connect } from 'react-redux';
 import TextField from '@material-ui/core/TextField';
 //components
-import GridCardListInfinite from "../components/Grid/GridListInfinite.jsx"
+import GridCardListInfinite from "../components/Grid/GridListInfinite.jsx";
+//actions
+import { setSearchField, 
+        resetSearchArray, 
+        requestMovie, 
+        setPage,
+        requestMovieDetail } from "../actions.js";
 
-export default function SearchView (props) {
-
-    const [searchInput, setSearchInput] = useState(''); 
-    const [searchArray, setSearchArray] = useState([]); 
-    const [resultsCount, setResultsCount] = useState(0);
-    const [page, setPage] = React.useState(1);
-    const APIkey = process.env.REACT_APP_API_KEY;
-
-    const onSearchChange = (event) => {
-        setSearchArray([]);
-        setResultsCount(0);
-        setPage(1);
-        setSearchInput(event.target.value);       
-        // console.log('searchInput' , searchInput, searchArray);
+const mapStateToProps = state => {
+    return {
+        searchField : state.searchMovie.searchField,
+        searchMoviesArray: state.requestMovie.searchMoviesArray,
+        resultsCount: state.requestMovie.resultsCount,
+        page: state.requestMovie.page
     }
+}
 
-    const setResultCount = (count) => {
-        setResultsCount(count);
+const mapDispatchToProps = (dispatch) => {
+    return { 
+        onSearchChange: (event) => {
+            dispatch(resetSearchArray())
+            dispatch(setSearchField(event.target.value))
+        },
+        onRequestMovie: (searchField, page) => dispatch(requestMovie(searchField, page)),
+        onPageSet: (page) => dispatch(setPage(page)),
+        onSelectMovie: (movieId) => {
+            dispatch(requestMovieDetail(movieId))
+            dispatch(setSearchField(''))
+            dispatch(resetSearchArray())
+        }
     }
+}
 
-    function AddMovieArray(movies) {
-        setSearchArray(searchArray => [...searchArray, ...movies]);
-    }
+function SearchView (props) {
 
     const selectMovie = (movieId) => {
-        fetch('http://www.omdbapi.com/?apikey=' + APIkey + '&i=' + movieId + '&plot=full')
-            .then(response=> response.json())
-            .then(movieDetail => {props.selectMovie(movieDetail)});
+        props.onSelectMovie(movieId)
     }
 
     const fetchAnotherPage = () => {
-        fetchMovie(page+2);
-        fetchMovie(page+3);
-        setPage(page+2);
-    }
-
-    const fetchMovie = (part) => {
-        const fetchURL = 'http://www.omdbapi.com/?apikey=' + APIkey + '&s=' + searchInput + '&page='+ part; 
-        fetch(`${fetchURL}`)
-            .then(response=> response.json())
-            .then(movies => {if (movies.Response==='True') {
-                    AddMovieArray(movies.Search)
-                    if (page ===1) {setResultCount(movies.totalResults)}
-                } 
-            })
-            .catch(err => {console.log('FETCH ERROR: ', err)});
+        props.onRequestMovie(props.searchField, props.page+2)
+        props.onRequestMovie(props.searchField, props.page+3)
+        props.onPageSet(props.page+2);
     }
 
     React.useEffect(() => {
-            fetchMovie(page);
-            fetchMovie(page+1);
-    }, [searchInput])
+        props.onRequestMovie(props.searchField, props.page);
+        props.onRequestMovie(props.searchField, props.page+1)
+    }, [props.searchField])
 
     return (
         <React.Fragment>
@@ -62,17 +58,19 @@ export default function SearchView (props) {
                 <form className="" 
                     noValidate 
                     autoComplete="off"
-                    onChange={onSearchChange}>
+                    value={props.searchField}
+                    onChange={props.onSearchChange}>
                     <TextField id="outlined-basic" label="Search Movie" variant="outlined" />
                 </form>
                 <div style={{"fontSize":"22px","padding":"12px"}}>
-                    Results: {resultsCount} </div>
+                    Results: {props.resultsCount} </div>
             </div>
-            <GridCardListInfinite searchArray={searchArray}
-                        resultsCount={resultsCount}
+            <GridCardListInfinite searchArray={props.searchMoviesArray}
+                        resultsCount={props.resultsCount}
                         fetchAnotherPage={fetchAnotherPage}
                         selectMovie={selectMovie}/>
         </React.Fragment>
         )
  }
 
+ export default connect(mapStateToProps, mapDispatchToProps)(SearchView); 

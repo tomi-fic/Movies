@@ -91,36 +91,10 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function Layout() {
+export default function Layout(props) {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
-  const [selectedMovie, setSelectedMovie] = React.useState([]); 
-  const [favouriteMovies, setfavouriteMovies] = React.useState([]);
-
-  const selectMovie = (movieDetail) => {
-    setSelectedMovie([movieDetail]);
-}
-
-  const addToFavourites = () => {
-    if (!checkIfFavourite()) {
-      setfavouriteMovies(favouriteMovie => [...favouriteMovie, selectedMovie[0]])
-    }
-  }
-
-  const removeFromFavourites = (imdbID) => {
-    if (checkIfFavourite()) {
-      setfavouriteMovies(favouriteMovies.filter(movie => movie.imdbID !== (!imdbID ? selectedMovie[0].imdbID :imdbID)))
-    }
-  }
-
-  const checkIfFavourite = () => {
-    let isFavourite = false;  
-    favouriteMovies.map((movie) => {
-      if (movie.imdbID === selectedMovie[0].imdbID) {isFavourite = true}
-    })
-    return isFavourite
-  }
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -131,6 +105,7 @@ export default function Layout() {
   };
 
   const getRoutes = routes => {
+    console.log('STORAGE:', localStorage.getItem("FavouriteMovies"))
     return routes.map((prop, key) => {
       if (prop.layout === "/movies") {
         return (
@@ -139,13 +114,6 @@ export default function Layout() {
             render={props => (
               <prop.component
                 {...props}
-                selectedMovie={selectedMovie}
-                favouriteMovies={favouriteMovies}
-                selectMovie={selectMovie}
-                addToFavourites={addToFavourites}
-                removeFromFavourites={removeFromFavourites}
-                isAddedToFavourites={checkIfFavourite}
-
               />
             )}
             key={key}
@@ -223,3 +191,4 @@ export default function Layout() {
     </div>
   );
 }
+

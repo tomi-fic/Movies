@@ -1,4 +1,5 @@
 import React from 'react';
+import {connect} from 'react-redux';
 import { Link } from "react-router-dom";
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -9,8 +10,25 @@ import IconButton from '@material-ui/core/IconButton';
 import InfoIcon from '@material-ui/icons/Info';
 import Tooltip from '@material-ui/core/Tooltip';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
+import { removeFavourite, requestMovieDetail, setSearchField } from "../../actions.js";
 
 import defaultImage from "../../assets/img/defaultimage.jpg";
+
+const mapStateToProps = state => {
+  return {
+    favouriteMovies : state.requestMovie.favouriteMovies,
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return { 
+    onRemoveFavourite: (imdbID) => dispatch(removeFavourite(imdbID)),
+    onSelectMovie: (movieId) => {
+      dispatch(requestMovieDetail(movieId))
+      dispatch(setSearchField(''))
+    }
+  } 
+}
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -41,8 +59,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function GridCardList(props) {
+function GridCardList(props) {
   const classes = useStyles();
+
+  const removeFromFavourites = (imdbID) => {
+      props.onRemoveFavourite(imdbID)
+  }
+
+  React.useEffect(() => {
+    localStorage.setItem('FavouriteMovies', JSON.stringify(props.favouriteMovies));
+  }, [props.favouriteMovies]);
   
   return (
     <div className={classes.root}>
@@ -54,7 +80,7 @@ export default function GridCardList(props) {
                 <div>
                   <Tooltip title="Remove from favourites" placement="bottom" arrow>
                     <RemoveCircleIcon className={classes.removeicon}
-                          onClick={()=> props.removeFromFavourites(movie.imdbID)}/>
+                          onClick={()=> removeFromFavourites(movie.imdbID)}/>
                   </Tooltip>
                   <div className="img-zoom">
                       {(movie.Poster === 'N/A') 
@@ -73,7 +99,7 @@ export default function GridCardList(props) {
                             PopperProps={{popperOptions:{modifiers: {offset: {enabled: true,offset: '0px, -15px'},},},}}>
                           <IconButton aria-label={`info about ${movie.Title}`} 
                                       className={classes.icon}
-                                      onClick={()=> props.selectMovie(movie.imdbID)}
+                                      onClick={()=> props.onSelectMovie(movie.imdbID)}
                                       >
                               <InfoIcon />
                           </IconButton>
@@ -87,3 +113,5 @@ export default function GridCardList(props) {
     </div>
   );
 }
+
+export default connect(mapStateToProps, mapDispatchToProps)(GridCardList); 
