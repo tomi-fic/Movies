@@ -57,6 +57,7 @@ export const requestMovie = (state=initialStateRequest, action={}) => {
         case 'ADD_TO_FAVOURITES' :
             return {...state, favouriteMovies: [...state.favouriteMovies, state.selectedMovie[0] ]}
         case 'REMOVE_FROM_FAVOURITES':
+            if (state.favouriteMovies.length === 1) {localStorage.removeItem('FavouriteMovies')}
             return {...state, favouriteMovies: 
                 [ ...state.favouriteMovies.filter(movie => movie.imdbID !== (action.payload ? action.payload : state.selectedMovie[0].imdbID ))]}               
         default: 

@@ -1,7 +1,7 @@
 Movie App - FrontEnd Project
 =====================
 
-This app is made for movies search with frontend only. There are many libraries used in this project : **React** for DOM visualisation, **Redux** for state management, **redux-thunk** for handling API side effects, **react-router** for SPA approach and many more. Please feel free to fork it and  
+This app is made for movies search with frontend only. There are many libraries used in this project : **React** for DOM visualisation, **Redux** for state management, **redux-thunk** for handling API side effects, **react-router** for SPA approach and many more. Please feel free to fork and use it.  
 
 Prerequisites
 -------------
