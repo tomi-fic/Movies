@@ -42,7 +42,6 @@ export const requestMovie = (searchField, page) => (dispatch) => {
 
 export const requestMovieDetail = (movieId) => (dispatch) => {
     const fetchURL = 'http://www.omdbapi.com/?apikey=' + APIkey + '&i=' + movieId + '&plot=full'; 
-    console.log(fetchURL)
     dispatch({type: 'REQUEST_DETAIL_PENDING'});
     fetch(`${fetchURL}`)
         .then(response=> response.json())

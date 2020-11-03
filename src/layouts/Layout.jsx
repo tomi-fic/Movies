@@ -91,7 +91,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function Layout(props) {
+export default function Layout() {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
@@ -105,7 +105,6 @@ export default function Layout(props) {
   };
 
   const getRoutes = routes => {
-    console.log('STORAGE:', localStorage.getItem("FavouriteMovies"))
     return routes.map((prop, key) => {
       if (prop.layout === "/movies") {
         return (
@@ -172,7 +171,7 @@ export default function Layout(props) {
         </div>
         <Divider />
         <List>
-          {Routes.map((routes, index) => (
+          {Routes.map((routes) => (
             <Link to={"/movies" + routes.path} 
                   style={{ textDecoration: 'none', color: 'black' }}
                   key={routes.name}>

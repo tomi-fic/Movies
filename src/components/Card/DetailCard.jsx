@@ -1,5 +1,5 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
@@ -10,21 +10,6 @@ import { addFavourite, removeFavourite } from "../../actions.js";
 
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import StarIcon from '@material-ui/icons/Star';
-
-const mapStateToProps = state => {
-  return {
-    selectedMovie: state.requestMovie.selectedMovie,
-    favouriteMovies: state.requestMovie.favouriteMovies
-  }
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return { 
-    onAddFavourite: () => dispatch(addFavourite()),
-    onRemoveFavourite: (imdbID) => dispatch(removeFavourite(imdbID))
-  } 
-}
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,12 +35,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function DetailCard(props) {
+export default function DetailCard() {
+
+  const selectedMovie = useSelector(state => state.requestMovie.selectedMovie[0]);
+  const favouriteMovies = useSelector(state => state.requestMovie.favouriteMovies);
+  const dispatch = useDispatch();
 
   const checkIfFavourite = () => {
     let isFavourite = false;  
-    props.favouriteMovies.map((movie) => {
-      if (movie.imdbID === props.selectedMovie[0].imdbID) {isFavourite = true}
+    favouriteMovies.map((movie) => {
+      if (movie.imdbID === selectedMovie.imdbID) {isFavourite = true}
       return null
     })
     return isFavourite
@@ -63,21 +52,21 @@ function DetailCard(props) {
 
   const addToFavourites = () => {
     if (!checkIfFavourite()) {
-      props.onAddFavourite()
+      dispatch(addFavourite())
     }
   }
 
   const removeFromFavourites = () => {
     if (checkIfFavourite()) {
-      props.onRemoveFavourite()
+      dispatch(removeFavourite())
     }
   }
 
   const classes = useStyles();
 
   React.useEffect(() => {
-    localStorage.setItem('FavouriteMovies', JSON.stringify(props.favouriteMovies));
-  }, [props.favouriteMovies]);
+    localStorage.setItem('FavouriteMovies', JSON.stringify(favouriteMovies));
+  }, [favouriteMovies]);
 
   return (
     <div className={classes.root}>
@@ -85,7 +74,7 @@ function DetailCard(props) {
         <Grid container spacing={0}>
           <Grid item>
             <ButtonBase className={classes.image}>
-              <img className={classes.img} alt="complex" src={props.selectedMovie[0].Poster}/>
+              <img className={classes.img} alt="complex" src={selectedMovie.Poster}/>
             </ButtonBase>
           </Grid>
           <Grid item xs={12} sm container>
@@ -100,36 +89,40 @@ function DetailCard(props) {
                             <StarBorderIcon onClick={()=> {addToFavourites()}}/>
                           </Tooltip>
                     }
-                    {props.selectedMovie[0].Title}
+                    {selectedMovie.Title}
                 </Typography>
                 <Typography variant="body2" >
-                    {props.selectedMovie[0].Genre}
+                    {selectedMovie.Genre}
                 </Typography>
                 <Typography variant="body2" gutterBottom>
-                    {props.selectedMovie[0].Country}, {props.selectedMovie[0].Year}, {props.selectedMovie[0].Runtime}
+                    {selectedMovie.Country}, {selectedMovie.Year}, {selectedMovie.Runtime}
                 </Typography>
                 <Typography variant="body2" >
-                    Director: {props.selectedMovie[0].Director}
+                    Director: {selectedMovie.Director}
                 </Typography>
                 <Typography variant="body2">
-                    Actors: {props.selectedMovie[0].Actors}
+                    Actors: {selectedMovie.Actors}
                 </Typography>
                 <Typography variant="body2" gutterBottom>
-                    Author: {props.selectedMovie[0].Writer}
+                    Author: {selectedMovie.Writer}
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
-                    {props.selectedMovie[0].Plot}
+                    {selectedMovie.Plot}
                 </Typography>
               </Grid>
             </Grid>
             <Grid item xs={3} container direction="column" spacing={0}>
                 <Grid item xs>
-                    {props.selectedMovie[0].Ratings.map((rating, key) => {
-                        return <div className="rating" key={key}>
-                            <div style={{"display": 'flex','alignItems': 'center'}} key={rating.Source+'src'}> 
+                    {selectedMovie.Ratings.map((rating, key) => {
+                        return <div className="rating" 
+                                    key={key}>
+                            <div style={{"display": 'flex',
+                                      'alignItems': 'center'}} 
+                                  key={rating.Source+'src'}> 
                                 {rating.Source} :
                             </div> 
-                            <div style={{"fontSize":"20px"}} key={rating.Source+'val'}> 
+                            <div style={{"fontSize":"20px"}} 
+                                  key={rating.Source+'val'}> 
                                 {rating.Value} 
                             </div> 
                             </div>
@@ -143,5 +136,3 @@ function DetailCard(props) {
     </div>
   );
 }
-
-export default connect(mapStateToProps, mapDispatchToProps)(DetailCard); 

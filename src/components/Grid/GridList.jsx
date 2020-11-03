@@ -1,7 +1,6 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import { Link } from "react-router-dom";
-
 import { makeStyles } from '@material-ui/core/styles';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
@@ -10,25 +9,9 @@ import IconButton from '@material-ui/core/IconButton';
 import InfoIcon from '@material-ui/icons/Info';
 import Tooltip from '@material-ui/core/Tooltip';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
-import { removeFavourite, requestMovieDetail, setSearchField } from "../../actions.js";
+import { removeFavourite, requestMovieDetail } from "../../actions.js";
 
 import defaultImage from "../../assets/img/defaultimage.jpg";
-
-const mapStateToProps = state => {
-  return {
-    favouriteMovies : state.requestMovie.favouriteMovies,
-  }
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return { 
-    onRemoveFavourite: (imdbID) => dispatch(removeFavourite(imdbID)),
-    onSelectMovie: (movieId) => {
-      dispatch(requestMovieDetail(movieId))
-      dispatch(setSearchField(''))
-    }
-  } 
-}
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -59,23 +42,26 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function GridCardList(props) {
+export default function GridCardList() {
+
   const classes = useStyles();
+  const favouriteMovies = useSelector(state => state.requestMovie.favouriteMovies);
+  const dispatch = useDispatch();
 
   const removeFromFavourites = (imdbID) => {
-      props.onRemoveFavourite(imdbID)
+      dispatch(removeFavourite(imdbID))
   }
 
   React.useEffect(() => {
-    localStorage.setItem('FavouriteMovies', JSON.stringify(props.favouriteMovies));
-  }, [props.favouriteMovies]);
+    localStorage.setItem('FavouriteMovies', JSON.stringify(favouriteMovies));
+  }, [favouriteMovies]);
   
   return (
     <div className={classes.root}>
         <GridList cellHeight={190} 
                 className={classes.gridList}
                 cols={5}>
-          {props.favouriteMovies.map((movie,key) => (
+          {favouriteMovies.map((movie,key) => (
               <GridListTile key={movie.imdbID}>
                 <div>
                   <Tooltip title="Remove from favourites" placement="bottom" arrow>
@@ -99,7 +85,7 @@ function GridCardList(props) {
                             PopperProps={{popperOptions:{modifiers: {offset: {enabled: true,offset: '0px, -15px'},},},}}>
                           <IconButton aria-label={`info about ${movie.Title}`} 
                                       className={classes.icon}
-                                      onClick={()=> props.onSelectMovie(movie.imdbID)}
+                                      onClick={()=> dispatch(requestMovieDetail(movie.imdbID))}
                                       >
                               <InfoIcon />
                           </IconButton>
@@ -113,5 +99,3 @@ function GridCardList(props) {
     </div>
   );
 }
-
-export default connect(mapStateToProps, mapDispatchToProps)(GridCardList); 

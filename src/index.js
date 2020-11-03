@@ -2,20 +2,20 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, combineReducers } from 'redux';
-// import { createLogger } from  'redux-logger'; //DEV only
+import { createLogger } from  'redux-logger'; //DEV only
 import thunkMiddleware from 'redux-thunk';
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
-
+// reducers
 import { searchMovie, requestMovie } from "./reducers.js"
 
 import "./assets/css/index.css";
 
 import Layout from "./layouts/Layout.jsx";
 
-// const logger = createLogger(); // DEV only
+const logger = createLogger(); // DEV only
 const rootReducer = combineReducers({searchMovie, requestMovie})
 const store = createStore(rootReducer, applyMiddleware(thunkMiddleware, 
-                                                      // logger // DEV only
+                                                      logger // DEV only
                                                       )); 
 
 ReactDOM.render(
