@@ -29,10 +29,6 @@ export default function SearchView () {
         dispatch(setPage(page+2))
     }
 
-    const zconsoluj = (event) => {
-        console.log('EVENT',event.target.value)
-    }
-
     useEffect(() => {
         if (relink) {
             dispatch(requestMovie(searchField, page))
@@ -49,7 +45,6 @@ export default function SearchView () {
                     noValidate 
                     autoComplete="off"
                     onChange={(event) => {
-                        zconsoluj(event)
                         changeRelink(true)
                         dispatch(setSearchField(event.target.value))
                         dispatch(resetSearchArray())
